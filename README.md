@@ -48,7 +48,8 @@ print("Answer:", answer)
 
 ## Training
 To fine-tune the model:
-```Execute the code of qa_finetune.ipynb
+```
+Execute the code of qa_finetune.ipynb
 ```
 
 ## Deployment
