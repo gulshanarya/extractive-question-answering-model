@@ -20,7 +20,7 @@ This repository contains a **fine-tuned DistilBERT-based Question Answering (QA)
 To use this project, install dependencies using:
 
 ```bash
-pip install transformers tensorflow datasets gradio
+pip install -r requirements.txt
 ```
 
 ## Usage
@@ -53,33 +53,54 @@ Execute the code of qa_finetune.ipynb
 ```
 
 ## Deployment
-You can deploy the model using Gradio or Flask:
+You can deploy the model using Gradio:
 
-```bash
-python app.py  # Flask API
-```
-
-or with Gradio:
 ```python
+
 import gradio as gr
+import tensorflow as tf
+from transformers import TFAutoModelForQuestionAnswering, AutoTokenizer
 
-def answer_question(question, context):
+model = TFAutoModelForQuestionAnswering.from_pretrained("iamgulshan/bert-qa-squad")
+tokenizer = AutoTokenizer.from_pretrained("iamgulshan/bert-qa-squad")
+
+def qa_model(question, context):
     inputs = tokenizer(question, context, return_tensors="tf")
+    inputs.pop("token_type_ids", None)  # Remove token_type_ids if present
     outputs = model(**inputs)
-    start_scores, end_scores = outputs.start_logits, outputs.end_logits
-    start_idx = tf.argmax(start_scores, axis=-1).numpy()[0]
-    end_idx = tf.argmax(end_scores, axis=-1).numpy()[0]
-    answer = tokenizer.decode(inputs['input_ids'][0][start_idx:end_idx+1])
-    return answer
+  
+    answer_start_index = int(tf.math.argmax(outputs.start_logits, axis=-1)[0])
+    
+    
+    answer_end_index = int(tf.math.argmax(outputs.end_logits, axis=-1)[0])
+    start_prob = tf.nn.softmax(outputs.start_logits, axis=-1)[0][answer_start_index]
+    end_prob = tf.nn.softmax(outputs.end_logits, axis=-1)[0][answer_end_index]
 
-demo = gr.Interface(fn=answer_question, inputs=["text", "text"], outputs="text")
-demo.launch()
+    avg_prob = (start_prob + end_prob) / 2
+
+    if avg_prob >= 0.5:
+      predict_answer_tokens = inputs.input_ids[0, answer_start_index : answer_end_index + 1]
+      return tokenizer.decode(predict_answer_tokens)
+    else:
+      return "Sorry! I am not sure about the answer :)"
+
+
+iface = gr.Interface(
+    fn=qa_model,
+    inputs=["text", "text"],
+    outputs="text",
+    title="Question Answering Chatbot",
+    description="Ask a question and provide a context to get an answer.",
+)
+
+iface.launch()
 ```
+Web demo can be found [here](https://huggingface.co/spaces/iamgulshan/qaapp)
 
 ## Future Improvements
 - **Increase accuracy** with better data augmentation and hyperparameter tuning
 - **Try alternative models** (BERT, RoBERTa, or GPT-based models)
-- **Deploy with a scalable API** using FastAPI or Hugging Face Spaces
+- **Deploy with a scalable API** using FastAPI
 
 ## License
 This project is licensed under the **Apache 2.0 License**.
