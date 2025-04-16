@@ -1,0 +1,3 @@
+tensorflow==2.18.0
+transformers==4.50.2
+tf-keras==2.18.0
