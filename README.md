@@ -5,7 +5,7 @@ This repository contains a **fine-tuned DistilBERT-based Question Answering (QA)
 ## Features
 ✅ **Transformer-based QA model** using Hugging Face's `TFAutoModelForQuestionAnswering`  
 ✅ **Fine-tuned on SQuAD dataset** for extractive question answering  
-✅ **Achieves f1 score of 81 on validation data**, a good distil model.
+✅ **Achieves f1 score of 81 on validation data**, a good distil model.<br>
 ✅ **Efficient tokenization & batching** using `tokenizer` and TensorFlow datasets  
 ✅ **Deployable via API or web app** (Gradio, Streamlit, or Flask)  
 
