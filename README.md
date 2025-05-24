@@ -1,11 +1,11 @@
 # Question Answering Model (Fine-Tuned DistilBERT)
 
-This repository contains a **fine-tuned DistilBERT-based Question Answering (QA) model**, trained on the **SQuAD dataset**. The model achieves **70% validation accuracy** and is designed to extract precise answers from a given context. While there is room for improvement, this serves as a strong baseline for further fine-tuning.
+This repository contains a **fine-tuned DistilBERT-based Question Answering (QA) model**, trained on the **SQuAD dataset**. The model achieves **f1 score of 81 on validation data** and is designed to extract precise answers from a given context.
 
 ## Features
 ✅ **Transformer-based QA model** using Hugging Face's `TFAutoModelForQuestionAnswering`  
 ✅ **Fine-tuned on SQuAD dataset** for extractive question answering  
-✅ **Achieves 70% validation accuracy**, with scope for improvement  
+✅ **Achieves f1 score of 81 on validation data**, a good distil model.
 ✅ **Efficient tokenization & batching** using `tokenizer` and TensorFlow datasets  
 ✅ **Deployable via API or web app** (Gradio, Streamlit, or Flask)  
 
